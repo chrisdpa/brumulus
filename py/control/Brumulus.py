@@ -45,7 +45,6 @@ class Brumulus(object):
         reactor.run()
     
     def stop(self):
-        self.lager_api.stop()
         reactor.callFromThread(reactor.stop)
         sys.exit(0)
 
