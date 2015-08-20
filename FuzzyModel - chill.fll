@@ -1,0 +1,26 @@
+Engine: Chiller
+InputVariable: TemperatureError
+  enabled: true
+  range: -10.000 10.000
+  term: Optimal Triangle -1.000 0.000 1.000
+  term: warm Triangle 0.000 5.000 10.000
+  term: Hot Triangle 3.000 10.000 10.000
+OutputVariable: Freezer
+  enabled: true
+  range: 0.000 100.000
+  accumulation: AlgebraicSum
+  defuzzifier: MeanOfMaximum 200
+  default: nan
+  lock-valid: true
+  lock-range: true
+  term: Chill Triangle 10.000 50.000 80.000
+  term: On Trapezoid 50.000 75.000 100.000 100.000
+  term: Off Triangle 0.000 0.000 0.000
+RuleBlock: 
+  enabled: true
+  conjunction: AlgebraicProduct
+  disjunction: Maximum
+  activation: AlgebraicProduct
+  rule: if TemperatureError is Optimal then Freezer is Off
+  rule: if TemperatureError is warm then Freezer is Chill
+  rule: if TemperatureError is Hot then Freezer is On
