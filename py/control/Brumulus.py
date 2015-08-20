@@ -36,11 +36,11 @@ class Brumulus(object):
 
         self.thingsspeak = Thingsspeak()
 
-        control_loop_timer = task.LoopingCall(self.control_loop)
+        self.control_loop_timer = task.LoopingCall(self.control_loop)
         self.lager_api = LagerThread(self)
 
     def start(self):
-        control_loop_timer.start(30)
+        self.control_loop_timer.start(30)
         self.lager_api.start()
         reactor.run()
     
