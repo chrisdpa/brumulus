@@ -18,6 +18,9 @@ class LagerThread(threading.Thread):
         self.httpd = simple_server.make_server('', 8000, self.api)
         self.httpd.serve_forever()
 
+    def stop(self):
+        self.httpd.shutdown()
+
     def on_get(self, req, resp, action):
         try:
             result = self.brumulus.action(action)

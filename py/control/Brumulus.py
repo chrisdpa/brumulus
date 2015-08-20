@@ -48,8 +48,12 @@ class Brumulus(object):
         try:
             reactor.callFromThread(reactor.stop)
         except:
-            sys.exit(0)
-        sys.exit(0)
+            pass
+
+        try: 
+            self.lager_api.stop()
+        except:
+            pass
 
     def control_loop(self):
         prev_datetime = self.datetime
