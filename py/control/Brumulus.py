@@ -136,7 +136,7 @@ class Brumulus(object):
         return values
 
 
-class DaemonBrumulus(Daemon):
+class DaemonBrumulus(daemon.Daemon):
     def run(self):
         signal.signal(signal.SIGINT, signal_handler)
         self.brumulus = Brumulus()
