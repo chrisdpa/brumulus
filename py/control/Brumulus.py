@@ -131,7 +131,7 @@ brumulus = None
 
 def signal_handler(signal, frame):
     print('Caught Ctrl+C!')
-    brumulus.stop()
+    brumulus.stop(brumulus)
 
 def main():
     signal.signal(signal.SIGINT, signal_handler)
