@@ -12,6 +12,7 @@ import csv
 import json
 from datetime import datetime
 from decimal import *
+import signal
 
 
 class Brumulus(object):
@@ -41,6 +42,11 @@ class Brumulus(object):
         self.lager_api = LagerThread(self)
         self.lager_api.start()
         reactor.run()
+
+    def stop(self):
+        self.lager_api.stop()
+        reactor.stop()
+        sys.exit(0)
 
     def control_loop(self):
         prev_datetime = self.datetime
@@ -121,10 +127,15 @@ class Brumulus(object):
                   }
         return values
 
+brumulus = None
+
+def signal_handler(signal, frame):
+    print('Caught Ctrl+C!')
+    brumulus.stop()
 
 def main():
-    Brumulus()
-
+    signal.signal(signal.SIGINT, signal_handler)
+    brumulus = Brumulus()
 
 if __name__ == "__main__":
     main()
