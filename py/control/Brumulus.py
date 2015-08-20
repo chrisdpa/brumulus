@@ -13,7 +13,7 @@ import json
 from datetime import datetime
 from decimal import *
 import signal
-from daemon import Daemon
+from daemon import *
 
 
 class Brumulus(object):
