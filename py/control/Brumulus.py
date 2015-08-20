@@ -37,12 +37,13 @@ class Brumulus(object):
         self.thingsspeak = Thingsspeak()
 
         control_loop_timer = task.LoopingCall(self.control_loop)
-        control_loop_timer.start(30)
-
         self.lager_api = LagerThread(self)
+
+    def start(self):
+        control_loop_timer.start(30)
         self.lager_api.start()
         reactor.run()
-
+    
     def stop(self):
         self.lager_api.stop()
         reactor.callFromThread(reactor.stop)
@@ -131,11 +132,12 @@ brumulus = None
 
 def signal_handler(signal, frame):
     print('Caught Ctrl+C!')
-    brumulus.stop(brumulus)
+    brumulus.stop()
 
 def main():
     signal.signal(signal.SIGINT, signal_handler)
     brumulus = Brumulus()
+    brumulus.start()
 
 if __name__ == "__main__":
     main()
