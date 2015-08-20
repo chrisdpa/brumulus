@@ -45,7 +45,10 @@ class Brumulus(object):
         reactor.run()
     
     def stop(self):
-        reactor.callFromThread(reactor.stop)
+        try:
+            reactor.callFromThread(reactor.stop)
+        except:
+            sys.exit(0)
         sys.exit(0)
 
     def control_loop(self):
