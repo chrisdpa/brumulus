@@ -48,7 +48,7 @@ class ControlledOutput(object):
             if (self.override == 'off'):
                 self.output.set_output(self.off_state)
                 self.info = name, ' Off Mode'
-            else if (control_value * self.control_scale) > 10:
+            elif (control_value * self.control_scale) > 10:
                 self.output.set_output(self.on_state)
             else:
                 self.output.set_output(self.off_state)
