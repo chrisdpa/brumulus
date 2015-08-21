@@ -44,13 +44,17 @@ class Brumulus(object):
         self.control_loop_timer.start(30)
         self.lager_api.start()
         reactor.run()
-    
+
     def stop(self):
         try:
             reactor.callFromThread(reactor.stop)
         except:
-            sys.exit(0)
-        sys.exit(0)
+            pass
+
+        try:
+            self.lager_api.stop()
+        except:
+            pass
 
     def control_loop(self):
         prev_datetime = self.datetime
@@ -132,31 +136,18 @@ class Brumulus(object):
         return values
 
 
-class DaemonBrumulus(daemon.Daemon):
-    def run(self):
-        signal.signal(signal.SIGINT, signal_handler)
-        self.brumulus = Brumulus()
-        self.brumulus.start()
+brumulus = None
 
-    def signal_handler(signal, frame):
-        print('Caught Ctrl+C!')
-        self.brumulus.stop()
-    
+def signal_handler(signal, frame):
+    print('Caught Ctrl+C!')
+    global brumulus
+    brumulus.stop()
+
+def main():
+    signal.signal(signal.SIGINT, signal_handler)
+    global brumulus
+    brumulus = Brumulus()
+    brumulus.start()
 
 if __name__ == "__main__":
-    daemon = MyDaemon('/tmp/daemon-example.pid')
-    if len(sys.argv) == 2:
-        if 'start' == sys.argv[1]:
-            daemon.start()
-        elif 'stop' == sys.argv[1]:
-            daemon.stop()
-        elif 'restart' == sys.argv[1]:
-            daemon.restart()
-        else:
-            print "Unknown command"
-            sys.exit(2)
-        sys.exit(0)
-    
-    else:
-        print "usage: %s start|stop|restart" % sys.argv[0]
-        sys.exit(2)
+    main()
