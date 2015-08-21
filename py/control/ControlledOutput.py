@@ -13,6 +13,7 @@ class ControlledOutput(object):
         self.on_state = on_state
         self.control_scale = control_scale
 
+        self.override = 'auto'
         self.off_state = 1
         if on_state == 1:
             self.off_state = 0
@@ -25,10 +26,29 @@ class ControlledOutput(object):
         else:
             return 'Off'
 
+    def get_mode(self):
+        return self.override
+
+    def mode_toggle(self):
+        if self.override == off:
+            self.mode_auto()
+        else:
+            self.mode_off
+
+    def mode_off(self):
+        self.override = 'off'
+
+    def mode_auto(self):
+        self.override = 'auto'
+
     def control(self, control_value):
         self.info = None
+
         try:
-            if (control_value * self.control_scale) > 10:
+            if (self.override == 'off'):
+                self.output.set_output(self.off_state)
+                self.info = name, ' Off Mode'
+            else if (control_value * self.control_scale) > 10:
                 self.output.set_output(self.on_state)
             else:
                 self.output.set_output(self.off_state)

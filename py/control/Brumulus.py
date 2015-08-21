@@ -113,6 +113,12 @@ class Brumulus(object):
         if action == 'get_all':
             return self.get_all()
 
+        if action == 'toggle_chiller_mode':
+            self.chiller.mode_toggle()
+
+        if action == 'toggle_heater_mode':
+            self.heater.mode_toggle()
+
     def decrement_target_temp(self):
         self.target_temp -= 1
         return self.get_all()
@@ -125,13 +131,16 @@ class Brumulus(object):
         values = {'created_at': self.time,
                   'target_temp': str(self.target_temp),
                   'current_temp': '{0:.3f}'.format(self.current_temp),
+                  'temp_delta': '{0:.3f}'.format(self.temp_delta),
                   'control_value': '{0:.0f}'.format(self.control_value),
                   'chiller': self.chiller.get_state_str(),
                   'chiller_raw': self.chiller.get_raw(),
                   'chiller_info': self.chiller.get_info(),
+                  'chiller_mode': self.chiller.get_mode(),
                   'heater': self.heater.get_state_str(),
                   'heater_info': self.heater.get_info(),
-                  'heater_raw': self.heater.get_raw()
+                  'heater_raw': self.heater.get_raw(),
+                  'heater_mode': self.heater.get_mode(),
                   }
         return values
 
