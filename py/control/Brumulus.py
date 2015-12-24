@@ -44,14 +44,14 @@ class Brumulus(object):
         self.control_loop_timer.start(30)
         self.lager_api.start()
         reactor.run()
-    
+
     def stop(self):
         try:
             reactor.callFromThread(reactor.stop)
         except:
             pass
 
-        try: 
+        try:
             self.lager_api.stop()
         except:
             pass
@@ -113,6 +113,12 @@ class Brumulus(object):
         if action == 'get_all':
             return self.get_all()
 
+        if action == 'toggle_chiller_mode':
+            self.chiller.mode_toggle()
+
+        if action == 'toggle_heater_mode':
+            self.heater.mode_toggle()
+
     def decrement_target_temp(self):
         self.target_temp -= 1
         return self.get_all()
@@ -125,42 +131,32 @@ class Brumulus(object):
         values = {'created_at': self.time,
                   'target_temp': str(self.target_temp),
                   'current_temp': '{0:.3f}'.format(self.current_temp),
+                  'temp_delta': '{0:.3f}'.format(self.temp_delta),
                   'control_value': '{0:.0f}'.format(self.control_value),
                   'chiller': self.chiller.get_state_str(),
                   'chiller_raw': self.chiller.get_raw(),
                   'chiller_info': self.chiller.get_info(),
+                  'chiller_mode': self.chiller.get_mode(),
                   'heater': self.heater.get_state_str(),
                   'heater_info': self.heater.get_info(),
-                  'heater_raw': self.heater.get_raw()
+                  'heater_raw': self.heater.get_raw(),
+                  'heater_mode': self.heater.get_mode(),
                   }
         return values
 
 
-class DaemonBrumulus(daemon.Daemon):
-    def run(self):
-        signal.signal(signal.SIGINT, signal_handler)
-        self.brumulus = Brumulus()
-        self.brumulus.start()
+brumulus = None
 
-    def signal_handler(signal, frame):
-        print('Caught Ctrl+C!')
-        self.brumulus.stop()
-    
+def signal_handler(signal, frame):
+    print('Caught Ctrl+C!')
+    global brumulus
+    brumulus.stop()
+
+def main():
+    signal.signal(signal.SIGINT, signal_handler)
+    global brumulus
+    brumulus = Brumulus()
+    brumulus.start()
 
 if __name__ == "__main__":
-    daemon = MyDaemon('/tmp/daemon-example.pid')
-    if len(sys.argv) == 2:
-        if 'start' == sys.argv[1]:
-            daemon.start()
-        elif 'stop' == sys.argv[1]:
-            daemon.stop()
-        elif 'restart' == sys.argv[1]:
-            daemon.restart()
-        else:
-            print "Unknown command"
-            sys.exit(2)
-        sys.exit(0)
-    
-    else:
-        print "usage: %s start|stop|restart" % sys.argv[0]
-        sys.exit(2)
+    main()
