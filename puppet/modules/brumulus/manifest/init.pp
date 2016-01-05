@@ -76,7 +76,7 @@ class brumulus::controller inherits brumulus::parameters
 # Install GUI components
 #
 
-class brumulus::gui {
+class brumulus::gui inherits brumulus::parameters{
 
 	class { 'nginx': } 
 	
