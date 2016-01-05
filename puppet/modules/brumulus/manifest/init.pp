@@ -78,6 +78,8 @@ class brumulus::controller inherits brumulus::parameters
 
 class brumulus::gui {
 
+	class { 'nginx': } 
+	
 	nginx::resource::vhost { 'www.brumulus.com':
 		www_root => $path_www,
 	}
