@@ -3,13 +3,8 @@
 # Install base components
 #
 
-class brumulus::install{
-	$path='/var/lib/brumulus'
-	$user=brumulus
-	$service=brumulusd
-	$git='https://github.com/chrisdpa/brumulus.git'
-	$src="${path}/src"
-
+class brumulus::controller inherits brumulus::parameters
+{
 	include git
 
 	user { $user:
