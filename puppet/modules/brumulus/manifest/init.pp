@@ -59,7 +59,7 @@ class brumulus::controller inherits brumulus::parameters
 		ensure      => present,
 		enable      => true,
 		command     => '/usr/bin/python Brumulus.py',
-		directory   => "${path}/py/control/",
+		directory   => "${path}/bin/",
 		user        => $user,
 		group       => $user,
 		logdir_mode => '0770',
@@ -79,7 +79,7 @@ class brumulus::controller inherits brumulus::parameters
 class brumulus::gui inherits brumulus::parameters{
 
 	class { 'nginx': } 
-	
+
 	nginx::resource::vhost { 'www.brumulus.com':
 		www_root => $path_www,
 	}
