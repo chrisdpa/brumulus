@@ -55,6 +55,8 @@ class brumulus::controller inherits brumulus::parameters
 		group  => $user,
 	}
 
+ 	include ::supervisor
+
 	supervisor::program { $service:
 		ensure      => present,
 		enable      => true,
