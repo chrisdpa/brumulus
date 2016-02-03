@@ -7,7 +7,7 @@ include brumulus
 
 class brumulus {
     class { '::brumulus::controller': }
-    class { '::brumulus::gui': }
+    # class { '::brumulus::gui': }
 }
 
 class brumulus::parameters {
