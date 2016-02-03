@@ -18,7 +18,7 @@ class brumulus::parameters {
     $service=brumulusd
     $git='https://github.com/chrisdpa/brumulus.git'
     $src="${path}/src"
-    $1wiregpio=22
+    $onewiregpio=22
 
 }
 
@@ -34,9 +34,9 @@ class brumulus::controller inherits brumulus::parameters
     kmod::load{ 'w1-gpio': }
     kmod::load{ 'w1-therm': }
 
-    file_line { "Set 1-Wire GPIO PIN Number ${1wiregpio}":
+    file_line { "Set 1-Wire GPIO PIN Number ${onewiregpio}":
         path => '/boot/config.txt',  
-        line => "dtoverlay=w1-gpio,gpiopin=${1wiregpio}",
+        line => "dtoverlay=w1-gpio,gpiopin=${onewiregpio}",
     }
 
     $packages = ['python-scipy', 'python-daemon']
