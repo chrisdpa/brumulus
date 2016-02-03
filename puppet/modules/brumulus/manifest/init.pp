@@ -12,12 +12,12 @@ class brumulus {
 
 class brumulus::parameters {
     
-    $path='/var/lib/brumulus'
-    $path_www="${path}/www"
+    $path_install='/var/lib/brumulus'
+    $path_www="${path_install}/www"
     $user=brumulus
     $service=brumulusd
     $git='https://github.com/chrisdpa/brumulus.git'
-    $src="${path}/src"
+    $src="${path_install}/src"
     $onewiregpio=22
 
 }
@@ -67,7 +67,7 @@ class brumulus::controller inherits brumulus::parameters
         managehome => true,
     }
 
-    file { $path: 
+    file { $path_install: 
         ensure => 'directory',
         owner  => $user,
         group  => $user,
@@ -80,7 +80,7 @@ class brumulus::controller inherits brumulus::parameters
         user   => $user,
     }
 
-    file { "${path}/bin":
+    file { "${path_install}/bin":
         ensure => 'link',
         target => "${src}/py/control/",
         owner  => $user,
@@ -93,16 +93,11 @@ class brumulus::controller inherits brumulus::parameters
         ensure      => present,
         enable      => true,
         command     => '/usr/bin/python Brumulus.py',
-        directory   => "${path}/bin/",
+        directory   => "${path_install}/bin/",
         user        => $user,
         group       => $user,
         logdir_mode => '0770',
     }
-
-    service { $service:
-        ensure  => running,
-        enable  => true,
-    } 
 }
 
 # == Class: brumulus::gui
