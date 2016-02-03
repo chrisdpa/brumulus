@@ -47,14 +47,12 @@ class brumulus::controller inherits brumulus::parameters
  
     $pip_packages = [ 
             'numpy',
-#            'lapack',
             'scipy',
             'scikit-fuzzy', 
             'queuelib', 
             'falcon', 
             'Cython', 
             'twisted'
-#           'twisted.internet' 
     ]
 
     package { $pip_packages:
@@ -94,7 +92,7 @@ class brumulus::controller inherits brumulus::parameters
         enable      => true,
         command     => '/usr/bin/python Brumulus.py',
         directory   => "${path_install}/bin/",
-        user        => $user,
+        user        => 'root',
         group       => $user,
         logdir_mode => '0770',
     }
