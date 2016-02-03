@@ -31,8 +31,8 @@ class brumulus::controller inherits brumulus::parameters
 {
     include git
 
-    kmod::load{ 'w1-gpio': }
-    kmod::load{ 'w1-therm': }
+    kmod::load{ 'w1_gpio': }
+    kmod::load{ 'w1_therm': }
 
     file_line { "Set 1-Wire GPIO PIN Number ${onewiregpio}":
         path => '/boot/config.txt',  
