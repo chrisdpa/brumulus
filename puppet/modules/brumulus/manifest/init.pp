@@ -93,7 +93,7 @@ class brumulus::controller inherits brumulus::parameters
         command     => '/usr/bin/python Brumulus.py',
         directory   => "${path_install}/bin/",
         user        => 'root',
-        group       => $user,
+        group       => 'root',
         logdir_mode => '0770',
     }
 }
