@@ -1,0 +1,6 @@
+forge "https://forgeapi.puppetlabs.com"
+
+mod "proletaryo/supervisor"
+mod "theforeman/git"
+mod "jfryman/nginx"
+

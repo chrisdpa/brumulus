@@ -6,18 +6,19 @@ include brumulus
 #
 
 class brumulus {
-	class { '::brumulus::controller': }
-	class { '::brumulus::gui': }
+    class { '::brumulus::controller': }
+    class { '::brumulus::gui': }
 }
 
 class brumulus::parameters {
-	
-	$path='/var/lib/brumulus'
-	$path_www="${path}/www"
-	$user=brumulus
-	$service=brumulusd
-	$git='https://github.com/chrisdpa/brumulus.git'
-	$src="${path}/src"
+    
+    $path='/var/lib/brumulus'
+    $path_www="${path}/www"
+    $user=brumulus
+    $service=brumulusd
+    $git='https://github.com/chrisdpa/brumulus.git'
+    $src="${path}/src"
+    $1wiregpio=22
 
 }
 
@@ -28,49 +29,80 @@ class brumulus::parameters {
 
 class brumulus::controller inherits brumulus::parameters
 {
-	include git
+    include git
 
-	user { $user:
-		ensure     => 'present',
-		managehome => true,
-	}
+    kmod::load{ 'w1-gpio': }
+    kmod::load{ 'w1-therm': }
 
-	file { $path: 
-	    ensure => 'directory',
-	    owner  => $user,
-	    group  => $user,
-	    mode   => '0750',
-	}
-	
-	git::repo { $user:
-		target => $src,
-		source => $git,
-		user   => $user,
-	}
+    file_line { "Set 1-Wire GPIO PIN Number ${1wiregpio}":
+        path => '/boot/config.txt',  
+        line => "dtoverlay=w1-gpio,gpiopin=${1wiregpio}",
+    }
 
-	file { "${path}/bin":
-		ensure => 'link',
-		target => "${src}/py/control/",
-		owner  => $user,
-		group  => $user,
-	}
+    $packages = ['python-scipy', 'python-daemon']
 
- 	include ::supervisor
+    package { $packages:
+        ensure => installed
+    }
+ 
+    $pip_packages = [ 
+            'numpy',
+#            'lapack',
+            'scipy',
+            'scikit-fuzzy', 
+            'queuelib', 
+            'falcon', 
+            'Cython', 
+            'twisted'
+#           'twisted.internet' 
+    ]
 
-	supervisor::program { $service:
-		ensure      => present,
-		enable      => true,
-		command     => '/usr/bin/python Brumulus.py',
-		directory   => "${path}/bin/",
-		user        => $user,
-		group       => $user,
-		logdir_mode => '0770',
-	}
+    package { $pip_packages:
+        ensure   => installed,
+        provider => pip,
+    }
 
-	service { $service:
-	    ensure  => running,
-	    enable  => true,
-	} 
+    user { $user:
+        ensure     => 'present',
+        managehome => true,
+    }
+
+    file { $path: 
+        ensure => 'directory',
+        owner  => $user,
+        group  => $user,
+        mode   => '0750',
+    }
+    
+    git::repo { $user:
+        target => $src,
+        source => $git,
+        user   => $user,
+    }
+
+    file { "${path}/bin":
+        ensure => 'link',
+        target => "${src}/py/control/",
+        owner  => $user,
+        group  => $user,
+    }
+
+    include ::supervisor
+
+    supervisor::program { $service:
+        ensure      => present,
+        enable      => true,
+        command     => '/usr/bin/python Brumulus.py',
+        directory   => "${path}/bin/",
+        user        => $user,
+        group       => $user,
+        logdir_mode => '0770',
+    }
+
+    service { $service:
+        ensure  => running,
+        enable  => true,
+    } 
 }
 
 # == Class: brumulus::gui
@@ -80,10 +112,10 @@ class brumulus::controller inherits brumulus::parameters
 
 class brumulus::gui inherits brumulus::parameters{
 
-	class { 'nginx': } 
+    class { 'nginx': } 
 
-	nginx::resource::vhost { 'www.brumulus.com':
-		www_root => $path_www,
-	}
+    nginx::resource::vhost { 'www.brumulus.com':
+        www_root => $path_www,
+    }
 
 }
