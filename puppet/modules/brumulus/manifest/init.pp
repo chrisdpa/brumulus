@@ -13,7 +13,7 @@ class brumulus {
 class brumulus::parameters {
     
     $path_install='/var/lib/brumulus'
-    $path_www="${path_install}/www"
+    $path_www="/var/www/brumulus.com"
     $user=brumulus
     $service=brumulusd
     $git='https://github.com/chrisdpa/brumulus.git'
@@ -105,10 +105,20 @@ class brumulus::controller inherits brumulus::parameters
 
 class brumulus::gui inherits brumulus::parameters{
 
-    class { 'nginx': } 
+    
+    package { 'nginx':
+        ensure   => installed,
+    }
 
-    nginx::resource::vhost { 'www.brumulus.com':
-        www_root => $path_www,
+    file { '/var/www':
+        ensure => directory,
+    }
+
+    file { '/var/www/brumulus.com':
+        ensure => 'link',
+        target => "${path_install}/src/www/",
+        owner  => $user,
+        group  => $user,
     }
 
 }
