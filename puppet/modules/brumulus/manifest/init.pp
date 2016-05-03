@@ -4,16 +4,19 @@ include brumulus
 #
 # Configure Brumulus for basic operation
 #
-
 class brumulus {
     class { '::brumulus::controller': }
     # class { '::brumulus::gui': }
 }
 
+# == Class: brumulus::parameters
+#
+# Common settings
+#
 class brumulus::parameters {
-    
+
     $path_install='/var/lib/brumulus'
-    $path_www="/var/www/brumulus.com"
+    $path_www='/var/www/brumulus.com'
     $user=brumulus
     $service=brumulusd
     $git='https://github.com/chrisdpa/brumulus.git'
@@ -35,7 +38,7 @@ class brumulus::controller inherits brumulus::parameters
     kmod::load{ 'w1_therm': }
 
     file_line { "Set 1-Wire GPIO PIN Number ${onewiregpio}":
-        path => '/boot/config.txt',  
+        path => '/boot/config.txt',
         line => "dtoverlay=w1-gpio,gpiopin=${onewiregpio}",
     }
 
@@ -44,14 +47,14 @@ class brumulus::controller inherits brumulus::parameters
     package { $packages:
         ensure => installed
     }
- 
-    $pip_packages = [ 
+
+    $pip_packages = [
             'numpy',
             'scipy',
-            'scikit-fuzzy', 
-            'queuelib', 
-            'falcon', 
-            'Cython', 
+            'scikit-fuzzy',
+            'queuelib',
+            'falcon',
+            'Cython',
             'twisted'
     ]
 
@@ -65,13 +68,13 @@ class brumulus::controller inherits brumulus::parameters
         managehome => true,
     }
 
-    file { $path_install: 
+    file { $path_install:
         ensure => 'directory',
         owner  => $user,
         group  => $user,
         mode   => '0750',
     }
-    
+
     git::repo { $user:
         target => $src,
         source => $git,
@@ -102,10 +105,9 @@ class brumulus::controller inherits brumulus::parameters
 #
 # Install GUI components
 #
-
 class brumulus::gui inherits brumulus::parameters{
 
-    
+
     package { 'nginx':
         ensure   => installed,
     }
@@ -114,11 +116,49 @@ class brumulus::gui inherits brumulus::parameters{
         ensure => directory,
     }
 
-    file { '/var/www/brumulus.com':
+    file { '/var/www':
         ensure => 'link',
         target => "${path_install}/src/www/",
-        owner  => $user,
-        group  => $user,
+        owner  => 'root',
+        group  => 'root',
     }
+
+    file { '/usr/lib/arm-linux-gnueabihf/nss/':
+        ensure => 'link',
+        target => '/usr/lib/nss',
+        owner  => 'root',
+        group  => 'root',
+    }
+
+    package { 'chromium',
+              'x11-xserver-utils',
+              'unclutter':
+        ensure   => installed,
+    }
+
+    file { '/etc/xdg/lxsession/LXDE-pi/autostart':
+      ensure => file,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
+      source => 'puppet:///modules/brumulus/x-autostart',
+    }
+
+    # ~/.xinitrc
+    # #!/bin/sh
+    # exec /usr/bin/chromium --disable-web-security --kiosk http://127.0.0.1/kiosk.html
+
+    # /etc/nginx/sites-enabled/default
+    # server {
+    #     root /var/www;
+    #     index index.html index.htm kiosk.html;
+    #     server_name localhost;
+    #     location / {
+    #         try_files $uri $uri/ /index.html;
+    #     }
+    #     location /data/ {
+    #         proxy_pass       http://localhost:8000/;
+    #     }
+    # }
 
 }
