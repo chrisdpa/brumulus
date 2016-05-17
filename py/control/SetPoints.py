@@ -34,15 +34,21 @@ class SetPoints(object):
         for d in sorted(data):
             td = self.parse_time(data[d]['time_period'])
             active = (time_delta_culm < time_delta and time_delta <= td + time_delta_culm)
-            print "{}[{}] {}: {} => TI:{} ({} >> {})".format(
+            print "{}[{}] {}: {}c: {} => TI:{} ({} >> {})".format(
                 "*" if active else "",
                 d,
                 data[d]['note'],
+                data[d]['target'],
                 data[d]['time_period'],
                 td,
                 time_delta_culm,
                 time_delta_culm + td)
             time_delta_culm = td + time_delta_culm
+
+    def get_now_value(self):
+        now = self.get_now()
+        if now:
+            return now['target']
 
     def get_now(self):
         data = self.get_data()
