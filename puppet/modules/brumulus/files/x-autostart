@@ -2,4 +2,4 @@
 @xset s off
 @xset -dpms
 @xset s noblank
-@chromium --kiosk --incognito http://localhost
+@chromium --kiosk --incognito --disable-infobars --disable-session-crashed-bubble http://localhost
