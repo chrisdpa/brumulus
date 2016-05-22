@@ -72,21 +72,21 @@ class brumulus::controller inherits brumulus::parameters
         ensure => 'directory',
         owner  => $user,
         group  => $user,
-        mode   => '0750',
+        mode   => '0755',
     }
 
     file { "/var/data":
         ensure => 'directory',
         owner  => $user,
         group  => $user,
-        mode   => '0750',
-    } 
+        mode   => '0755',
+    }
 
     file { "/var/data/brumulus":
         ensure => 'directory',
         owner  => $user,
         group  => $user,
-        mode   => '0750',
+        mode   => '0755',
     }
 
     git::repo { $user:
@@ -111,7 +111,7 @@ class brumulus::controller inherits brumulus::parameters
         directory   => "${path_install}/bin/",
         user        => 'root',
         group       => 'root',
-        logdir_mode => '0770',
+        logdir_mode => '0775',
     }
 }
 
