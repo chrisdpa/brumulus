@@ -80,7 +80,7 @@ class brumulus::controller inherits brumulus::parameters
         owner  => $user,
         group  => $user,
         mode   => '0750',
-    } =>
+    } 
 
     file { "/var/data/brumulus":
         ensure => 'directory',
