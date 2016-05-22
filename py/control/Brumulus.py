@@ -123,11 +123,11 @@ class Brumulus(object):
             self.heater.mode_toggle()
 
     def decrement_target_temp(self):
-        self.target_temp -= 1
+        self.setpoint.set_gui_setpoint(self.target_temp - 1)
         return self.get_all()
 
     def increment_target_temp(self):
-        self.target_temp += 1
+        self.setpoint.set_gui_setpoint(self.target_temp + 1)
         return self.get_all()
 
     def get_all(self):
