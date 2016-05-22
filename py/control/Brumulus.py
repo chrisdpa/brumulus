@@ -27,11 +27,12 @@ class Brumulus(object):
         #TODO make this configurable
         self.temp = TemperatureSensor(device_id='28-000004f2300b')
         self.control = ControlTemperature()
+        self.setpoint = ControlSetPoint()
 
         self.chiller = ControlledOutput(ProtectedOutput(min_state_time=180, pin=17), name='Chiller')
         self.heater = ControlledOutput(ProtectedOutput(min_state_time=30, pin=23), name='Heater', control_scale=-1)
 
-        self.target_temp = 4
+        self.target_temp = self.setpoint.get_setpoint()
         self.datetime = None
         self.current_temp = None
 
@@ -60,11 +61,12 @@ class Brumulus(object):
         prev_datetime = self.datetime
         prev_temp = self.current_temp
 
+        self.target_temp = self.setpoint.get_setpoint()
         self.datetime = datetime.now()
         self.time = str(self.datetime.isoformat(' '))
         self.err = ''
         self.current_temp = self.temp.read_temp_decimal()
-        print "current_temp", self.current_temp
+        print "current_temp: {} setpoint: {}".format( self.current_temp, self.target_temp)
 
         if self.current_temp is None:
             self.err = "current_temp cannot be read"
