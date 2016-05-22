@@ -12,6 +12,11 @@ class ControlSetPoint(object):
         self.gui_setpoint = 4
         self.init()
 
+    def get_mode(self):
+        if self.is_gui_control():
+            return "GUI"
+        return "FILE"
+
     def to_string(self):
         re = "File: {}"
         if self.is_gui_control():

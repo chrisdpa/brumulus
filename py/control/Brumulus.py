@@ -132,6 +132,7 @@ class Brumulus(object):
     def get_all(self):
         values = {'created_at': self.time,
                   'target_temp': str(self.target_temp),
+                  'target_temp_mode': self.setpoint.get_mode(),
                   'current_temp': '{0:.3f}'.format(self.current_temp),
                   'temp_delta': '{0:.3f}'.format(self.temp_delta),
                   'control_value': '{0:.0f}'.format(self.control_value),
