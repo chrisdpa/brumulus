@@ -124,10 +124,12 @@ class Brumulus(object):
 
     def decrement_target_temp(self):
         self.setpoint.set_gui_setpoint(self.target_temp - 1)
+        self.target_temp = self.setpoint.get_setpoint()
         return self.get_all()
 
     def increment_target_temp(self):
         self.setpoint.set_gui_setpoint(self.target_temp + 1)
+        self.target_temp = self.setpoint.get_setpoint()
         return self.get_all()
 
     def get_all(self):
