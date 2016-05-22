@@ -137,9 +137,9 @@ class brumulus::gui inherits brumulus::parameters{
         group  => 'root',
     }
 
-    package { 'chromium',
+    package { ['chromium'
               'x11-xserver-utils',
-              'unclutter':
+              'unclutter']:
         ensure   => installed,
     }
 
