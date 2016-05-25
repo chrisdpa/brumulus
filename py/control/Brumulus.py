@@ -145,7 +145,7 @@ class Brumulus(object):
 
     def get_history(self, count = 20):
         print "current hist: {}".format(self.history)
-        return {list(self.history)[-1 * count:]}
+        return list(self.history)[-1 * count:]
 
     def get_all(self):
         values = {'created_at': self.time,
