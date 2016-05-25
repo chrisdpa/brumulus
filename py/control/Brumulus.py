@@ -7,6 +7,7 @@ from Lager import LagerThread
 from twisted.internet import task
 from twisted.internet import reactor
 from ControlSetPoint import ControlSetPoint
+from collections import deque
 import sys
 import traceback
 import csv
@@ -41,6 +42,9 @@ class Brumulus(object):
 
         self.control_loop_timer = task.LoopingCall(self.control_loop)
         self.lager_api = LagerThread(self)
+
+        self.history = deque()
+        self.history_max = 20
 
     def start(self):
         self.control_loop_timer.start(30)
@@ -82,7 +86,11 @@ class Brumulus(object):
                 self.heater.control(self.control_value)
 
                 # self.recorder()
-                self.thingsspeak.send(self.get_all())
+                values = self.get_all()
+                self.history.append(values)
+                if len(self.history) > self.history_max:
+                    self.history.popleft()
+                self.thingsspeak.send(values)
             except Exception as e:
                 print e
                 self.err = str(e)
@@ -122,6 +130,9 @@ class Brumulus(object):
         if action == 'toggle_heater_mode':
             self.heater.mode_toggle()
 
+        if action == 'get_history':
+            return self.get_history()
+
     def decrement_target_temp(self):
         self.setpoint.set_gui_setpoint(self.target_temp - 1)
         self.target_temp = self.setpoint.get_setpoint()
@@ -131,6 +142,9 @@ class Brumulus(object):
         self.setpoint.set_gui_setpoint(self.target_temp + 1)
         self.target_temp = self.setpoint.get_setpoint()
         return self.get_all()
+
+    def get_history(self, count = 20):
+        return self.history[-1 * count:]
 
     def get_all(self):
         values = {'created_at': self.time,
