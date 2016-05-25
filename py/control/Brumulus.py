@@ -144,6 +144,7 @@ class Brumulus(object):
         return self.get_all()
 
     def get_history(self, count = 20):
+        print "current hist: {}".format(self.history)
         return {list(self.history)[-1 * count:]}
 
     def get_all(self):
