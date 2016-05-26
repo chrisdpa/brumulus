@@ -112,6 +112,7 @@ class brumulus::controller inherits brumulus::parameters
         user        => 'root',
         group       => 'root',
         logdir_mode => '0775',
+        autorestart => true,
     }
 }
 
