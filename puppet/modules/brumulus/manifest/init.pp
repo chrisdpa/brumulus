@@ -75,14 +75,14 @@ class brumulus::controller inherits brumulus::parameters
         mode   => '0755',
     }
 
-    file { "/var/data":
+    file { '/var/data':
         ensure => 'directory',
         owner  => $user,
         group  => $user,
         mode   => '0755',
     }
 
-    file { "/var/data/brumulus":
+    file { '/var/data/brumulus':
         ensure => 'directory',
         owner  => $user,
         group  => $user,
@@ -113,7 +113,22 @@ class brumulus::controller inherits brumulus::parameters
         group       => 'root',
         logdir_mode => '0775',
         autorestart => true,
+        stdout_logfile_backups => 2,
+
     }
+
+    file { '/usr/local/bin/wificheck.sh':
+      source => 'puppet:///modules/brumulus/wificheck.sh',
+      mode   => '0755',
+    }
+
+    cron { 'wificheck':
+      command => '/usr/local/bin/wificheck.sh',
+      user    => root,
+      minute  => '*/5'
+    }
+
+
 }
 
 # == Class: brumulus::gui
