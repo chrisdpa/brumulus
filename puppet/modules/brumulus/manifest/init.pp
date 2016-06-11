@@ -114,11 +114,10 @@ class brumulus::controller inherits brumulus::parameters
         logdir_mode => '0775',
         autorestart => true,
         stdout_logfile_backups => 2,
-
     }
 
     file { '/usr/local/bin/wificheck.sh':
-      source => 'puppet:///modules/brumulus/wificheck.sh',
+      source => 'puppet://modules/brumulus/wificheck.sh',
       mode   => '0755',
     }
 
