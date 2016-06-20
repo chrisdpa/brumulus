@@ -145,7 +145,7 @@ class Brumulus(object):
         self.target_temp = self.setpoint.get_setpoint()
         return self.get_all()
 
-    def get_history(self, count = 20):
+    def get_history(self, count = 60):
         print "current hist: {}".format(self.history)
         return list(self.history)[-1 * count:]
 
