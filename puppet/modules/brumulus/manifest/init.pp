@@ -117,7 +117,7 @@ class brumulus::controller inherits brumulus::parameters
     }
 
     file { '/usr/local/bin/wificheck.sh':
-      source => 'puppet://modules/brumulus/wificheck.sh',
+      source => 'puppet:///modules/brumulus/wificheck.sh',
       mode   => '0755',
     }
 
