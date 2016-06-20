@@ -105,19 +105,19 @@ class brumulus::controller inherits brumulus::parameters
     include ::supervisor
 
     supervisor::program { $service:
-        ensure      => present,
-        enable      => true,
-        command     => '/usr/bin/python Brumulus.py',
-        directory   => "${path_install}/bin/",
-        user        => 'root',
-        group       => 'root',
-        logdir_mode => '0775',
-        autorestart => true,
+        ensure                 => present,
+        enable                 => true,
+        command                => '/usr/bin/python Brumulus.py',
+        directory              => "${path_install}/bin/",
+        user                   => 'root',
+        group                  => 'root',
+        logdir_mode            => '0775',
+        autorestart            => true,
         stdout_logfile_backups => 2,
     }
 
     file { '/usr/local/bin/wificheck.sh':
-      source => 'puppet:///modules/brumulus/wificheck.sh',
+      source => "${src}/puppet/modules/brumulus/files/wificheck.sh",
       mode   => '0755',
     }
 
