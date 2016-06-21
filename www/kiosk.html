@@ -19,7 +19,7 @@
 <div class="container-fluid">
   <div class="row">
 		<div class="col-xs-6">
-      <div id="chart_div" class="" style="width: 130px; height: 170px;"></div>
+      <div id="chart_div" class="" style="width: 160px; height: 170px;"></div>
     </div>
     <div class="col-xs-6 col-centered" >
       <div class="row margin-top-10">
@@ -75,7 +75,7 @@ app.controller('brumulusController', function($scope, $http, $interval) {
   $display_url_incr_temp = $display_url+"increment_target_temp"
   $display_url_decr_temp = $display_url+"decrement_target_temp"
 
-  $scope.temp_time_series = [];
+  // $scope.temp_time_series = [];
 
   $http.get($display_url_get_history)
   .success(function(response) {
@@ -100,11 +100,10 @@ app.controller('brumulusController', function($scope, $http, $interval) {
     $http.get($display_url_get_all)
     .success(function(response) {
       $scope.brumulus_values = response.data;
-      $scope.temp_time_series.push(response.data);
+      // $scope.temp_time_series.push(response.data);
       drawChart(response.data)
     });
   },5000)
-
 
 });
 //
