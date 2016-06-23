@@ -136,22 +136,6 @@ class brumulus::controller inherits brumulus::parameters
 #
 class brumulus::gui inherits brumulus::parameters{
 
-
-    package { 'nginx':
-        ensure   => installed,
-    }
-
-    file { '/var/www':
-        ensure => directory,
-    }
-
-    file { '/var/www':
-        ensure => 'link',
-        target => "${path_install}/src/www/",
-        owner  => 'root',
-        group  => 'root',
-    }
-
     file { '/usr/lib/arm-linux-gnueabihf/nss/':
         ensure => 'link',
         target => '/usr/lib/nss',
