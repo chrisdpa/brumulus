@@ -10,10 +10,10 @@ class LagerThread(threading.Thread):
         threading.Thread.__init__(self)
         super(LagerThread, self).__init__()
         self.brumulus = brumulus
-
+        page = Resource()
         self.api = falcon.API(middleware=[JSONTranslator()])
         self.api.add_route('/action/{action}', self)
-        self.api.add_route('/', Resource())
+        self.api.add_route('/', page)
 
     def run(self):
         self.httpd = simple_server.make_server('', 8000, self.api)
@@ -42,6 +42,7 @@ class Resource(object):
     def on_get(self, req, resp):
         resp.body = self.page
         resp.status = falcon.HTTP_200
+        resp.location = 'kiosk.html'
 
 
 class JSONTranslator(object):
