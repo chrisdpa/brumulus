@@ -43,7 +43,7 @@ class Resource(object):
         resp.body = self.page
         resp.status = falcon.HTTP_200
         resp.location = 'kiosk.html'
-        resp.context_type = 'text/html'
+        resp.content_type = 'text/html'
 
 
 class JSONTranslator(object):
