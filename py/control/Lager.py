@@ -37,7 +37,7 @@ class LagerThread(threading.Thread):
 class Resource(object):
 
     def __init__(self):
-        self.page = open(filename).read()
+        self.page = open('www/kiosk.html').read()
 
     def on_get(self, req, resp):
         resp.body = self.page
