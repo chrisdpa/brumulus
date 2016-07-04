@@ -1,0 +1,5 @@
+@xscreensaver -no-splash
+@xset s off
+@xset -dpms
+@xset s noblank
+@chromium --kiosk --incognito --disable-infobars --disable-session-crashed-bubble http://localhost

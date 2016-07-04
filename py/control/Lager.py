@@ -10,9 +10,10 @@ class LagerThread(threading.Thread):
         threading.Thread.__init__(self)
         super(LagerThread, self).__init__()
         self.brumulus = brumulus
-
+        page = Resource()
         self.api = falcon.API(middleware=[JSONTranslator()])
         self.api.add_route('/action/{action}', self)
+        self.api.add_route('/', page)
 
     def run(self):
         self.httpd = simple_server.make_server('', 8000, self.api)
@@ -31,6 +32,18 @@ class LagerThread(threading.Thread):
 
         except Exception as e:
             print "action failed: ", action, str(e)
+
+
+class Resource(object):
+
+    def __init__(self):
+        self.page = open('www/kiosk.html').read()
+
+    def on_get(self, req, resp):
+        resp.body = self.page
+        resp.status = falcon.HTTP_200
+        resp.location = 'kiosk.html'
+        resp.content_type = 'text/html'
 
 
 class JSONTranslator(object):

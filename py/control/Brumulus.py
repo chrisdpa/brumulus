@@ -6,6 +6,8 @@ from Thingsspeak import Thingsspeak
 from Lager import LagerThread
 from twisted.internet import task
 from twisted.internet import reactor
+from ControlSetPoint import ControlSetPoint
+from collections import deque
 import sys
 import traceback
 import csv
@@ -26,12 +28,14 @@ class Brumulus(object):
 
         #TODO make this configurable
         self.temp = TemperatureSensor(device_id='28-000004f2300b')
+        self.temp_2 = TemperatureSensor(device_id='28-000004f17ab8')
         self.control = ControlTemperature()
+        self.setpoint = ControlSetPoint()
 
         self.chiller = ControlledOutput(ProtectedOutput(min_state_time=180, pin=17), name='Chiller')
         self.heater = ControlledOutput(ProtectedOutput(min_state_time=30, pin=23), name='Heater', control_scale=-1)
 
-        self.target_temp = 4
+        self.target_temp = self.setpoint.get_setpoint()
         self.datetime = None
         self.current_temp = None
 
@@ -39,6 +43,9 @@ class Brumulus(object):
 
         self.control_loop_timer = task.LoopingCall(self.control_loop)
         self.lager_api = LagerThread(self)
+
+        self.history = deque()
+        self.history_max = 20
 
     def start(self):
         self.control_loop_timer.start(30)
@@ -60,11 +67,13 @@ class Brumulus(object):
         prev_datetime = self.datetime
         prev_temp = self.current_temp
 
+        self.target_temp = self.setpoint.get_setpoint()
         self.datetime = datetime.now()
         self.time = str(self.datetime.isoformat(' '))
         self.err = ''
         self.current_temp = self.temp.read_temp_decimal()
-        print "current_temp", self.current_temp
+        self.current_temp_2 = self.temp_2.read_temp_decimal()
+        print "current_temp: {} setpoint: {}".format( self.current_temp, self.target_temp)
 
         if self.current_temp is None:
             self.err = "current_temp cannot be read"
@@ -79,7 +88,11 @@ class Brumulus(object):
                 self.heater.control(self.control_value)
 
                 # self.recorder()
-                self.thingsspeak.send(self.get_all())
+                values = self.get_all()
+                self.history.append(values)
+                if len(self.history) > self.history_max:
+                    self.history.popleft()
+                self.thingsspeak.send(values)
             except Exception as e:
                 print e
                 self.err = str(e)
@@ -119,18 +132,29 @@ class Brumulus(object):
         if action == 'toggle_heater_mode':
             self.heater.mode_toggle()
 
+        if action == 'get_history':
+            return self.get_history()
+
     def decrement_target_temp(self):
-        self.target_temp -= 1
+        self.setpoint.set_gui_setpoint(self.target_temp - 1)
+        self.target_temp = self.setpoint.get_setpoint()
         return self.get_all()
 
     def increment_target_temp(self):
-        self.target_temp += 1
+        self.setpoint.set_gui_setpoint(self.target_temp + 1)
+        self.target_temp = self.setpoint.get_setpoint()
         return self.get_all()
+
+    def get_history(self, count = 60):
+        print "current hist: {}".format(self.history)
+        return list(self.history)[-1 * count:]
 
     def get_all(self):
         values = {'created_at': self.time,
                   'target_temp': str(self.target_temp),
+                  'target_temp_mode': self.setpoint.get_mode(),
                   'current_temp': '{0:.3f}'.format(self.current_temp),
+                  'current_temp_2': '{0:.3f}'.format(self.current_temp_2),
                   'temp_delta': '{0:.3f}'.format(self.temp_delta),
                   'control_value': '{0:.0f}'.format(self.control_value),
                   'chiller': self.chiller.get_state_str(),

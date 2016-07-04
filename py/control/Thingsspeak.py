@@ -18,7 +18,8 @@ class Thingsspeak(object):
                   'field2': values['current_temp'],
                   'field3': values['control_value'],
                   'field4': values['chiller_raw'],
-                  'field5': values['heater_raw']
+                  'field5': values['heater_raw'],
+                  'field6': values['current_temp_2']
                   }
         print values
 

@@ -19,7 +19,7 @@
 <div class="container-fluid">
   <div class="row">
 		<div class="col-xs-6">
-      <div id="chart_div" class="" style="width: 130px; height: 170px;"></div>
+      <div id="chart_div" class="" style="width: 160px; height: 170px;"></div>
     </div>
     <div class="col-xs-6 col-centered" >
       <div class="row margin-top-10">
@@ -71,14 +71,15 @@ app.controller('brumulusController', function($scope, $http, $interval) {
 
   $display_url = "http://192.168.0.150:8000/action/"
   $display_url_get_all = $display_url+"get_all"
+  $display_url_get_history = $display_url+"get_history"
   $display_url_incr_temp = $display_url+"increment_target_temp"
   $display_url_decr_temp = $display_url+"decrement_target_temp"
 
-  $scope.temp_time_series = [];
+  // $scope.temp_time_series = [];
 
-  $http.get($display_url_get_all)
+  $http.get($display_url_get_history)
   .success(function(response) {
-    $scope.brumulus_values = response.data;
+    buildDataFromHistory(response.data);
   });
 
   $scope.increment_target_temp = function() {
@@ -99,11 +100,10 @@ app.controller('brumulusController', function($scope, $http, $interval) {
     $http.get($display_url_get_all)
     .success(function(response) {
       $scope.brumulus_values = response.data;
-      $scope.temp_time_series.push(response.data);
+      // $scope.temp_time_series.push(response.data);
       drawChart(response.data)
     });
   },5000)
-
 
 });
 //
@@ -111,13 +111,24 @@ var chartData = [['Time','Temp','Set Point']]
 var currCreatedAt = null
 var tempData = []
 
+function dataItems(item, index){
+  chartData.push(
+    [Date.parse(item.created_at),
+      Number(item.current_temp),
+      Number(item.target_temp)])
+}
+
+function buildDataFromHistory(historyJson){
+  historyJson.forEach(dataItems)
+}
+
 function drawChart(newData) {
   MAX_LEN_DATA = 120
 
-  if (!newData || !newData.created_at || !newData.current_temp){
+  if (!newData){
     return
   }
-//
+
   if ( newData.created_at == currCreatedAt )
     return
 
@@ -127,8 +138,8 @@ function drawChart(newData) {
   chartData.push([Date.parse(newData.created_at), Number(newData.current_temp), Number(newData.target_temp)])
 
   if (chartData.length > MAX_LEN_DATA){
-    chartData.splice(1,1)
-    tempData.splice(0,1)
+    chartData.shift()
+    tempData.shift()
   }
 
   var data = google.visualization.arrayToDataTable(chartData);

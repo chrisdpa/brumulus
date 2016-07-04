@@ -1,0 +1,27 @@
+---
+- hosts: all
+  tasks:
+  - name: Download brumulus from github
+    get_url: url=https://github.com/chrisdpa/brumulus/archive/master.zip dest=/tmp/brumulus.zip
+
+  - name: Unzip the file
+    unarchive: src=/tmp/brumulus.zip dest=/tmp/
+
+  - name: Create directory
+    sudo: true
+    file: path=/var/lib/brumulus state=directory
+
+  - name: configure 1-wire interface
+    sudo: true
+    modprobe: name=w1_gpio
+    modprobe: name=w1_therm
+
+  - name: Set pin 22 for 1-wire connection
+    sudo: true
+    lineinfile: dest=/boot/config.txt regexp=^dtoverlay line=dtoverlay=w1-gpio,gpiopin=22
+
+  - name: Install python packages
+    package: name="python-scipy"
+#    package: name=python-daemon
+
+

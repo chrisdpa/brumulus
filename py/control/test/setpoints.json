@@ -1,0 +1,27 @@
+{
+  "1":{
+    "note": "Wort chill",
+    "time_period": "1h",
+    "target": 9,
+    "type": "slope",
+    "mode": "chill"
+  },
+  "2":{
+    "note": "Ferment",
+    "time_period": "8d",
+    "target": 9,
+    "mode": "chill"
+  },
+  "3":{
+    "note": "Diacety Rest",
+    "time_period": "2D",
+    "target": 18,
+    "mode": "heat"
+  },
+  "4":{
+    "note": "Lager (bottled)",
+    "time_period": "21D",
+    "target": 1,
+    "mode": "chill"
+  }
+}
