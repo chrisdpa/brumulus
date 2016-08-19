@@ -16,7 +16,7 @@ Temperature Probe ds18b20
   - ssh pi@192.168.0.150 (what ever you allocated to the wifi adapter above) 
 
 === Install Puppet
-  - sudo apt-get install puppet
+  - sudo apt-get install puppet git
 
 === Clone the Git Repository
   - git clone https://github.com/chrisdpa/brumulus.git

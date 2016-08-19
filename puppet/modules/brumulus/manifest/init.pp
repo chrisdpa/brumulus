@@ -55,7 +55,8 @@ class brumulus::controller inherits brumulus::parameters
             'queuelib',
             'falcon',
             'Cython',
-            'twisted'
+            'twisted',
+            'python-dateutil'
     ]
 
     package { $pip_packages:
