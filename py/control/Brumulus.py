@@ -16,12 +16,15 @@ from datetime import datetime
 from decimal import *
 import signal
 from daemon import *
+import logging
 
 
 class Brumulus(object):
     """docstring for Brumulus"""
-    def __init__(self):
+    def __init__(self, logger):
         super(Brumulus, self).__init__()
+
+        self.logger = logger
 
         self.flight_recorder_file = open('brumulus.csv', 'a')
         self.flight_recorder = csv.writer(self.flight_recorder_file)
@@ -39,13 +42,13 @@ class Brumulus(object):
         self.datetime = None
         self.current_temp = None
 
-        self.thingsspeak = Thingsspeak()
+        # self.thingsspeak = Thingsspeak()
 
         self.control_loop_timer = task.LoopingCall(self.control_loop)
         self.lager_api = LagerThread(self)
 
-        self.history = deque()
-        self.history_max = 20
+        # self.history = deque()
+        # self.history_max = 20
 
     def start(self):
         self.control_loop_timer.start(30)
@@ -73,7 +76,7 @@ class Brumulus(object):
         self.err = ''
         self.current_temp = self.temp.read_temp_decimal()
         self.current_temp_2 = self.temp_2.read_temp_decimal()
-        print "current_temp: {} setpoint: {}".format( self.current_temp, self.target_temp)
+        print "current_temp: {} setpoint: {}".format(self.current_temp, self.target_temp)
 
         if self.current_temp is None:
             self.err = "current_temp cannot be read"
@@ -89,10 +92,10 @@ class Brumulus(object):
 
                 # self.recorder()
                 values = self.get_all()
-                self.history.append(values)
-                if len(self.history) > self.history_max:
-                    self.history.popleft()
-                self.thingsspeak.send(values)
+                # self.history.append(values)
+                # if len(self.history) > self.history_max:
+                #     self.history.popleft()
+                # self.thingsspeak.send(values)
             except Exception as e:
                 print e
                 self.err = str(e)
@@ -145,7 +148,7 @@ class Brumulus(object):
         self.target_temp = self.setpoint.get_setpoint()
         return self.get_all()
 
-    def get_history(self, count = 60):
+    def get_history(self, count=60):
         print "current hist: {}".format(self.history)
         return list(self.history)[-1 * count:]
 
@@ -179,7 +182,24 @@ def signal_handler(signal, frame):
 def main():
     signal.signal(signal.SIGINT, signal_handler)
     global brumulus
-    brumulus = Brumulus()
+
+    logger = logging.getLogger('brumulus')
+    logger.setLevel(logging.DEBUG)
+    # create file handler which logs even debug messages
+    fh = logging.FileHandler('/var/log/brumulus.log')
+    fh.setLevel(logging.DEBUG)
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.ERROR)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
+    brumulus = Brumulus(logger)
     brumulus.start()
 
 if __name__ == "__main__":
