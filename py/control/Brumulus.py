@@ -16,15 +16,15 @@ from datetime import datetime
 from decimal import *
 import signal
 from daemon import *
-import logging
+# import logging
 
 
 class Brumulus(object):
     """docstring for Brumulus"""
-    def __init__(self, logger):
+    def __init__(self):
         super(Brumulus, self).__init__()
 
-        self.logger = logger
+        # self.logger = logger
 
         self.flight_recorder_file = open('brumulus.csv', 'a')
         self.flight_recorder = csv.writer(self.flight_recorder_file)
@@ -183,23 +183,23 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     global brumulus
 
-    logger = logging.getLogger('brumulus')
-    logger.setLevel(logging.DEBUG)
+    # logger = logging.getLogger('brumulus')
+    # logger.setLevel(logging.DEBUG)
     # create file handler which logs even debug messages
-    fh = logging.FileHandler('/var/log/brumulus.log')
-    fh.setLevel(logging.DEBUG)
+    # fh = logging.FileHandler('/var/log/brumulus.log')
+    # fh.setLevel(logging.DEBUG)
     # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.ERROR)
+    # ch = logging.StreamHandler()
+    # ch.setLevel(logging.ERROR)
     # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
+    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # fh.setFormatter(formatter)
+    # ch.setFormatter(formatter)
     # add the handlers to the logger
-    logger.addHandler(fh)
-    logger.addHandler(ch)
+    # logger.addHandler(fh)
+    # logger.addHandler(ch)
 
-    brumulus = Brumulus(logger)
+    brumulus = Brumulus()
     brumulus.start()
 
 if __name__ == "__main__":
