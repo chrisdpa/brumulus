@@ -79,30 +79,30 @@ class Brumulus(object):
         self.current_temp_2 = self.temp_2.read_temp_decimal()
         print "current_temp: {} setpoint: {}".format(self.current_temp, self.target_temp)
 
-        if self.current_temp is None:
-            self.err = "current_temp cannot be read"
-            print self.err
-        else:
-            try:
-                self.temp_delta = self.get_temp_delta(prev_datetime, prev_temp)
-                print "Temp delta ", self.temp_delta
-                self.control_value = self.control.get_output(self.current_temp, self.target_temp, self.temp_delta)
-                print "control_value", self.control_value
-                self.chiller.control(self.control_value)
-                self.heater.control(self.control_value)
-
-                # self.recorder()
-                # values = self.get_all()
-                # self.history.append(values)
-                # if len(self.history) > self.history_max:
-                #     self.history.popleft()
-                # self.thingsspeak.send(values)
-            except Exception as e:
-                print e
-                self.err = str(e)
-                print '-' * 60
-                traceback.print_exc(file=sys.stdout)
-                print '-' * 60
+        # if self.current_temp is None:
+        #     self.err = "current_temp cannot be read"
+        #     print self.err
+        # else:
+        #     try:
+        #         self.temp_delta = self.get_temp_delta(prev_datetime, prev_temp)
+        #         print "Temp delta ", self.temp_delta
+        #         self.control_value = self.control.get_output(self.current_temp, self.target_temp, self.temp_delta)
+        #         print "control_value", self.control_value
+        #         self.chiller.control(self.control_value)
+        #         self.heater.control(self.control_value)
+        #
+        #         # self.recorder()
+        #         # values = self.get_all()
+        #         # self.history.append(values)
+        #         # if len(self.history) > self.history_max:
+        #         #     self.history.popleft()
+        #         # self.thingsspeak.send(values)
+        #     except Exception as e:
+        #         print e
+        #         self.err = str(e)
+        #         print '-' * 60
+        #         traceback.print_exc(file=sys.stdout)
+        #         print '-' * 60
 
     def get_temp_delta(self, prev_datetime, prev_temp):
         if (prev_datetime is None or prev_temp is None):
