@@ -4,8 +4,8 @@ from ProtectedOutput import *
 from ControlledOutput import *
 from Thingsspeak import Thingsspeak
 from Lager import LagerThread
-from twisted.internet import task
-from twisted.internet import reactor
+# from twisted.internet import task
+# from twisted.internet import reactor
 from ControlSetPoint import ControlSetPoint
 from collections import deque
 import sys
@@ -15,6 +15,7 @@ import json
 from datetime import datetime
 from decimal import *
 import signal
+import time
 from daemon import *
 # import logging
 
@@ -26,8 +27,8 @@ class Brumulus(object):
 
         # self.logger = logger
 
-        self.flight_recorder_file = open('brumulus.csv', 'a')
-        self.flight_recorder = csv.writer(self.flight_recorder_file)
+        # self.flight_recorder_file = open('brumulus.csv', 'a')
+        # self.flight_recorder = csv.writer(self.flight_recorder_file)
 
         #TODO make this configurable
         self.temp = TemperatureSensor(device_id='28-000004f2300b')
@@ -44,27 +45,27 @@ class Brumulus(object):
 
         # self.thingsspeak = Thingsspeak()
 
-        self.control_loop_timer = task.LoopingCall(self.control_loop)
-        self.lager_api = LagerThread(self)
+        # self.control_loop_timer = task.LoopingCall(self.control_loop)
+        # self.lager_api = LagerThread(self)
 
         # self.history = deque()
         # self.history_max = 20
 
-    def start(self):
-        self.control_loop_timer.start(30)
-        self.lager_api.start()
-        reactor.run()
-
-    def stop(self):
-        try:
-            reactor.callFromThread(reactor.stop)
-        except:
-            pass
-
-        try:
-            self.lager_api.stop()
-        except:
-            pass
+    # def start(self):
+    #     self.control_loop_timer.start(30)
+    #     self.lager_api.start()
+    #     reactor.run()
+    #
+    # def stop(self):
+    #     try:
+    #         reactor.callFromThread(reactor.stop)
+    #     except:
+    #         pass
+    #
+    #     try:
+    #         self.lager_api.stop()
+    #     except:
+    #         pass
 
     def control_loop(self):
         prev_datetime = self.datetime
@@ -91,7 +92,7 @@ class Brumulus(object):
                 self.heater.control(self.control_value)
 
                 # self.recorder()
-                values = self.get_all()
+                # values = self.get_all()
                 # self.history.append(values)
                 # if len(self.history) > self.history_max:
                 #     self.history.popleft()
@@ -112,10 +113,10 @@ class Brumulus(object):
 
         return Decimal((temp_delta / time_delta) * 60)
 
-    def recorder(self):
-        data = [self.time, self.target_temp, '{0:.3f}'.format(self.current_temp), self.chiller_ssr_raw, self.control_value, self.err]
-        print data
-        self.flight_recorder.writerow(data)
+    # def recorder(self):
+    #     data = [self.time, self.target_temp, '{0:.3f}'.format(self.current_temp), self.chiller_ssr_raw, self.control_value, self.err]
+    #     print data
+    #     self.flight_recorder.writerow(data)
 
     actions = {'increment_target_temp', 'decrement_target_temp'}
 
@@ -172,16 +173,18 @@ class Brumulus(object):
         return values
 
 
-brumulus = None
+# brumulus = None
 
-def signal_handler(signal, frame):
-    print('Caught Ctrl+C!')
-    global brumulus
-    brumulus.stop()
+
+# def signal_handler(signal, frame):
+    # print('Caught Ctrl+C!')
+    # global brumulus
+    # brumulus.stop()
+
 
 def main():
-    signal.signal(signal.SIGINT, signal_handler)
-    global brumulus
+    # signal.signal(signal.SIGINT, signal_handler)
+    # global brumulus
 
     # logger = logging.getLogger('brumulus')
     # logger.setLevel(logging.DEBUG)
@@ -200,7 +203,9 @@ def main():
     # logger.addHandler(ch)
 
     brumulus = Brumulus()
-    brumulus.start()
+    while True:
+        brumulus.control_loop()
+        time.sleep(30)
 
 if __name__ == "__main__":
     main()
