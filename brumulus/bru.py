@@ -2,7 +2,7 @@ import requests
 import time
 
 control_endpoint = 'http://192.168.0.35:5002/control/?current_temp={}&target_temp={}&delta_temp_c={}&delta_time_ms={}'
-heater_endpoint = 'http://192.168.0.35/output/0/{}'
+heater_endpoint = 'http://192.168.0.35:5000/output/0/{}'
 temperature_endpoing = 'http://192.168.0.32:5000/temp'
 temp = requests.get('http://192.168.0.32:5000/temp').content
 prev = temp
@@ -21,5 +21,5 @@ while (True):
 
     if ('Output.heat' == control):
         requests.get(heater_endpoint.format('ON'))
-    
+
     time.sleep(15)
