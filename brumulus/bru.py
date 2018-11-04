@@ -6,7 +6,7 @@ heater_endpoint = 'http://192.168.0.35/output/0/{}'
 temperature_endpoing = 'http://192.168.0.32:5000/temp'
 temp = requests.get('http://192.168.0.32:5000/temp').content
 prev = temp
-setpoint 20
+setpoint = 20.0
 
 while (True):
     temp = requests.get(temperature_endpoing).content
