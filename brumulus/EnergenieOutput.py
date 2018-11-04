@@ -19,9 +19,11 @@ class EnergenieOutput(object):
     def set_state(self, state):
         if state == 'ON':
             self.energenie.on()
+            self.state = 'ON'
             return 'ON'
         if state == 'OFF':
             self.energenie.off()
+            self.state = 'OFF'
             return 'OFF'
 
         raise Exception('Cannot set EnergenieOutput state to {}'.format(state))
