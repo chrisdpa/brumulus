@@ -25,3 +25,6 @@ class EnergenieOutput(object):
             return 'OFF'
 
         raise Exception('Cannot set EnergenieOutput state to {}'.format(state))
+
+    def get_state(self):
+        return self.state

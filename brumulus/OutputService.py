@@ -6,7 +6,7 @@ import ProtectedOutput as po
 
 app = Flask(__name__)
 
-outputs = [po.ProtectedOutput(so.EnergenieOutput(), min_state_time=10)]
+outputs = [po.ProtectedOutput(so.EnergenieOutput(1), min_state_time=10)]
 
 
 @app.route("/output/<int:index>/<string:state>", methods=['GET', 'POST'])
