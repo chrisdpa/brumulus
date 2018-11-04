@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import abort
-import EnerginieOutput as so
+import EnergenieOutput as so
 import ProtectedOutput as po
 
 
