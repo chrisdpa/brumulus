@@ -13,13 +13,13 @@ while (True):
     diff = float(temp) - float(prev)
     control = requests.get(control_endpoint.format(temp, setpoint, diff, 15000)).content
     prev = temp
-    if ('Output.off' == control){
+    if ('Output.off' == control):
         requests.get(heater_endpoint.format('OFF'))
-    }
-    if ('Output.chill' == control){
+
+    if ('Output.chill' == control):
         requests.get(heater_endpoint.format('OFF'))
-    }
-    if ('Output.heat' == control){
+
+    if ('Output.heat' == control):
         requests.get(heater_endpoint.format('ON'))
-    }
+    
     time.sleep(15)
