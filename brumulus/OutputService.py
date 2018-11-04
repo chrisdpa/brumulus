@@ -12,7 +12,8 @@ outputs = [po.ProtectedOutput(so.EnergenieOutput(1), min_state_time=10)]
 @app.route("/output/<int:index>/<string:state>", methods=['GET', 'POST'])
 def post(index, state):
     try:
-        return outputs[index].set_state(state)
+        outputs[index].set_state(state)
+        return outputs[index].get_state()
     except Exception as e:
         print(e)
         abort(404)
@@ -21,7 +22,6 @@ def post(index, state):
 @app.route("/output/<int:index>/", methods=['GET'])
 def get(index):
     try:
-        print('index: {}'.format(index))
         return outputs[index].get_state()
     except Exception as e:
         print(e)
