@@ -37,14 +37,14 @@ while (True):
         data['control_value'] = 1
 
     data['heater_raw'] = 1
-    if (requests.get(heater_endpoint.format('')) == 'OFF'):
+    if (str(requests.get(heater_endpoint.format(''))) == 'OFF'):
         data['heater_raw'] = 0
 
     data['chiller_raw'] = 1
-    if (requests.get(chiller_endpoint.format('')) == 'OFF'):
+    if (str(requests.get(chiller_endpoint.format(''))) == 'OFF'):
         data['chiller_raw'] = 0
     print(data)
 
-    # requests.post(logging_endpoint, data=data)
+    requests.post(logging_endpoint, data=data)
 
     time.sleep(15)
