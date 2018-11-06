@@ -17,7 +17,7 @@ while (True):
     data['created_at'] = datetime.now().isoformat(' ')
     data['target_temp'] = setpoint
     data['current_temp'] = requests.get(temperature_endpoint).content
-
+    print(data)
     diff = float(data['current_temp']) - float(prev)
     control = requests.get(control_endpoint.format(data['current_temp'], setpoint, diff, 15000)).content
     prev = data['current_temp']
@@ -43,7 +43,8 @@ while (True):
     data['chiller_raw'] = 1
     if (requests.get(chiller_endpoint.format('')) == 'OFF'):
         data['chiller_raw'] = 0
-
+    print(data)
+    
     # requests.post(logging_endpoint, data=data)
 
     time.sleep(15)
