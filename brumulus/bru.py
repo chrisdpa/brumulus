@@ -19,7 +19,7 @@ while (True):
     data['current_temp'] = requests.get(temperature_endpoint).content
 
     diff = float(data['current_temp']) - float(prev)
-    data['control'] = requests.get(control_endpoint.format(data['current_temp'], setpoint, diff, 15000)).content
+    data['control'] = string(requests.get(control_endpoint.format(data['current_temp'], setpoint, diff, 15000)).content)
     prev = data['current_temp']
     if (data['control'] == 'Output.off'):
         requests.get(heater_endpoint.format('OFF'))
