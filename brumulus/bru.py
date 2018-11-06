@@ -44,6 +44,6 @@ while (True):
     if (requests.get(chiller_endpoint.format('')) == 'OFF'):
         data['chiller_raw'] = 0
 
-    requests.post(logging_endpoint, data=data)
+    # requests.post(logging_endpoint, data=data)
 
     time.sleep(15)
