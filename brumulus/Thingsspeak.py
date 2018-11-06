@@ -28,5 +28,5 @@ class Thingsspeak(object):
                 headers={'Content-Type': 'application/json'},
                 data=json.dumps(data))
             print(r)
-        except e:
+        except Exception as e:
             print(e)
