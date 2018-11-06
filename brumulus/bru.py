@@ -13,7 +13,7 @@ prev = temp
 setpoint = 20.0
 
 while (True):
-    data  = {}
+    data  = dict()
     data['created_at'] = datetime.now().isoformat(' ')
     data['target_temp'] = setpoint
     data['current_temp'] = requests.get(temperature_endpoint).content
@@ -43,7 +43,8 @@ while (True):
     data['chiller_raw'] = 1
     if (str(requests.get(chiller_endpoint.format(''))) == 'OFF'):
         data['chiller_raw'] = 0
-    print(data)
+
+    print("data: {}".format(data))
 
     try:
         requests.post(logging_endpoint, data=data)
