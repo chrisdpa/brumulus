@@ -44,7 +44,7 @@ while (True):
     if (str(requests.get(chiller_endpoint.format(''))) == 'OFF'):
         data['chiller_raw'] = 0
 
-    print("data: {}".format(data))
+    print("*** data: {}".format(data))
 
     try:
         requests.post(logging_endpoint, data=data)
