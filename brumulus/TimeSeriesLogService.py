@@ -12,6 +12,7 @@ def control():
         data = request.json
         print("log: {}".format(data))
         thingsspeak.send(data)
+        return 'JSON posted'
     except Exception as e:
         print(e)
         abort(404)
