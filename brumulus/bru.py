@@ -6,7 +6,7 @@ control_endpoint = 'http://192.168.0.35:5002/control/?current_temp={}&target_tem
 heater_endpoint = 'http://192.168.0.35:5003/output/0/{}'
 chiller_endpoint = 'http://192.168.0.35:5003/output/1/{}'
 temperature_endpoint = 'http://192.168.0.32:5000/temp'
-logging_endpoint = 'http://192.168.0.35:5004/log/'
+logging_endpoint = 'http://192.168.0.35:5004/log'
 
 temp = requests.get(temperature_endpoint).content
 prev = temp
