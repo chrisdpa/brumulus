@@ -1,6 +1,7 @@
 import requests
 import time
 from datetime import datetime
+import json
 
 control_endpoint = 'http://192.168.0.35:5002/control/?current_temp={}&target_temp={}&delta_temp_c={}&delta_time_ms={}'
 heater_endpoint = 'http://192.168.0.35:5003/output/0/{}'
@@ -47,7 +48,7 @@ while (True):
     print("*** data: {}".format(data))
 
     try:
-        requests.post(logging_endpoint, data=data)
+        requests.post(logging_endpoint, data=json.dumps(data)))
     except e:
         print(e)
 
