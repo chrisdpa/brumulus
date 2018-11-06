@@ -18,6 +18,7 @@ while (True):
     data['created_at'] = datetime.now().isoformat(' ')
     data['target_temp'] = setpoint
     data['current_temp'] = requests.get(temperature_endpoint).content
+    data['current_temp_2'] = 0
 
     diff = float(data['current_temp']) - float(prev)
     data['control'] = str(requests.get(control_endpoint.format(data['current_temp'], setpoint, diff, 15000)).content)
@@ -45,10 +46,12 @@ while (True):
     if (str(requests.get(chiller_endpoint.format(''))) == 'OFF'):
         data['chiller_raw'] = 0
 
-    print("*** data: {}".format(data))
-
     try:
-        requests.post(logging_endpoint, data=json.dumps(data)))
+        print(json.dumps(data))
+        requests.post(
+            logging_endpoint,
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(data))
     except e:
         print(e)
 
