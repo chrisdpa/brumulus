@@ -1,14 +1,12 @@
 import requests
 import time
 from datetime import datetime
-from Thingsspeak import Thingsspeak
-
 
 control_endpoint = 'http://192.168.0.35:5002/control/?current_temp={}&target_temp={}&delta_temp_c={}&delta_time_ms={}'
 heater_endpoint = 'http://192.168.0.35:5003/output/0/{}'
 chiller_endpoint = 'http://192.168.0.35:5003/output/1/{}'
 temperature_endpoint = 'http://192.168.0.32:5000/temp'
-thingsspeak = Thingsspeak()
+logging_endpoint = 'http://192.168.0.35:5004/log/'
 
 temp = requests.get(temperature_endpoint).content
 prev = temp
@@ -46,6 +44,6 @@ while (True):
     if (requests.get(chiller_endpoint.format('')) == 'OFF'):
         data['chiller_raw'] = 0
 
-    thingsspeak.send(data)
+    requests.post_data(logging_endpoint, data=data)
 
     time.sleep(15)
