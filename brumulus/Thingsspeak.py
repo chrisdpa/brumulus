@@ -20,10 +20,14 @@ class Thingsspeak(object):
                   'field5': values['heater_raw'],
                   'field6': values['current_temp_2']
                   }
-        print values
+        print data
 
-        r = requests.post("https://api.thingspeak.com/update", data=payload)
-        print(r)
+        try:
+            r = requests.post(
+                "https://api.thingspeak.com/update",
+                headers={'Content-Type': 'application/json'},
+                data=json.dumps(data))
+            print(r)
 
 #         if response_html != '0':
 #             self.retry()
