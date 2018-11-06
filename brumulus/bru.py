@@ -45,6 +45,9 @@ while (True):
         data['chiller_raw'] = 0
     print(data)
 
-    requests.post(logging_endpoint, data=data)
+    try:
+        requests.post(logging_endpoint, data=data)
+    except e:
+        print(e)
 
     time.sleep(15)
