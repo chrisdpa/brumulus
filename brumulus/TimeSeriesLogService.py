@@ -6,10 +6,11 @@ from Thingsspeak import Thingsspeak
 app = Flask(__name__)
 thingsspeak = Thingsspeak()
 
-@app.route("/log/", methods=['POST'])
+@app.route("/log", methods=['POST'])
 def control():
     try:
-        data = request.get_json()
+        data = request.json
+        print("log: {}".format(data))
         thingsspeak.send(data)
     except Exception as e:
         print(e)
