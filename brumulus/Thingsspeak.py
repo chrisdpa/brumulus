@@ -1,5 +1,4 @@
 import requests
-from queuelib import FifoDiskQueue
 import time
 import json
 
@@ -8,7 +7,6 @@ class Thingsspeak(object):
     """docstring for Thingsspeak"""
     def __init__(self):
         super(Thingsspeak, self).__init__()
-        self.retry_queue = FifoDiskQueue("/var/thingsspeak.queue")
 
     def send(self, values):
         print('Thingspeak.send: {}'.format(values))
