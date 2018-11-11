@@ -1,4 +1,5 @@
 from gpiozero import Energenie
+import RPi.GPIO as GPIO
 
 
 class EnergenieOutput(object):

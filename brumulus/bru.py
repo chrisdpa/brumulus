@@ -54,9 +54,9 @@ while (True):
                 logging_endpoint,
                 headers={'Content-Type': 'application/json'},
                 data=json.dumps(data))
-        except e:
+        except Exception as e:
             print(e)
-    except e:
+    except Exception as e:
         print(e)
 
     time.sleep(15)
